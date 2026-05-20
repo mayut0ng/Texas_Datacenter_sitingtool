@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Texas Data Center Siting Tool</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; display: flex; height: 100vh; }
+        .control-panel {
+            width: 340px;
+            background: #2c3e50;
+            color: white;
+            overflow-y: auto;
+            padding: 15px;
+            z-index: 10;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+        }
+        .control-panel h2 { font-size: 18px; margin-bottom: 5px; text-align: center; }
+        .control-panel h3 { font-size: 12px; margin-bottom: 15px; text-align: center; color: #7f8c8d; font-weight: normal; }
+        .slider-group { margin-bottom: 12px; }
+        .slider-group label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+        input[type="range"] { width: 100%; cursor: pointer; background: #34495e; height: 4px; border-radius: 2px; }
+        .weight-value { color: #3498db; font-weight: bold; }
+        .status-bar { background: #1a252f; padding: 10px; border-radius: 5px; margin: 15px 0; text-align: center; }
+        .status-bar .total { font-size: 18px; font-weight: bold; color: #2ecc71; }
+        button {
+            background: #3498db; color: white; border: none; padding: 10px;
+            border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;
+            font-size: 14px; transition: background 0.2s;
+        }
+        button:hover { background: #2980b9; }
+        .note { font-size: 11px; color: #7f8c8d; text-align: center; margin-top: 15px; }
+        #map { flex: 1; height: 100vh; }
+        .legend { background: white; padding: 8px 12px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); font-size: 12px; }
+        .legend h4 { margin-bottom: 5px; font-size: 12px; }
+        .legend-colors { display: flex; height: 20px; margin: 5px 0; }
+        .legend-color { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="control-panel">
+        <h2>📊 Data Center Siting Tool</h2>
+        <h3>Texas County Suitability Analysis</h3>
+        
+        <div class="status-bar">
+            <div>Total Weight: <span id="totalWeight" class="total">1.00</span></div>
+            <div style="font-size: 10px; margin-top: 5px;">Drag sliders → Map updates in real time</div>
+        </div>
+        
+        <div id="weight-sliders"></div>
+        
+        <button id="resetBtn">⟳ Reset to Default Weights</button>
+        
+        <div class="note">
+            💡 Higher weight = more important factor<br>
+            🗺️ Darker color = higher suitability for data centers
+        </div>
+    </div>
+    <div id="map"></div>
+    <script src="script.js"></script>
+</body>
+</html>
