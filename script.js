@@ -167,17 +167,23 @@ function updateMapColors() {
     const minScore = Math.min(...scores);
     const maxScore = Math.max(...scores);
     
-    geoJsonLayer.eachLayer(layer => {
-        const score = layer.feature.properties.score || 0;
-        const color = getColor(score, minScore, maxScore);
-        layer.setStyle({
-            fillColor: color,
-            fillOpacity: 0.8,
-            weight: 0.8,
-            color: '#333333',
-            opacity: 0.4
-        });
+geoJsonLayer.eachLayer(layer => {
+    const score = layer.feature.properties.score || 0;
+    const color = getColor(score, minScore, maxScore);
+    layer.setStyle({
+        fillColor: color,
+        fillOpacity: 0.8,
+        weight: 0.8,
+        color: '#333333',
+        opacity: 0.4
     });
+    
+    // ========== 添加这段：重新绑定 tooltip ==========
+    const name = layer.feature.properties.NAME || layer.feature.properties.county || 'Unknown';
+    layer.unbindTooltip();  // 先解绑旧的
+    layer.bindTooltip(`${name}<br>Score: ${score.toFixed(4)}`, { sticky: true, direction: 'top' });
+    // ============================================
+});
     
     updateLegend(minScore, maxScore);
 }
