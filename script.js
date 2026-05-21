@@ -21,7 +21,7 @@ const indicators = [
     { id: '1_NR', name: 'Natural Disaster Risk', default: 0.1253 },
     { id: '1_GW', name: 'Groundwater', default: 0.0469 },
     { id: '1_SW', name: 'Surface Water', default: 0.1761 },
-    { id: '1_RW', name: 'Reuse Water', default: 0.0392 }
+    { id: '1_RW', name: 'Reclaimed Water', default: 0.0392 }
 ];
 
 const negativeIndicators = ['1_LP', '1_NR', '1_CP'];
