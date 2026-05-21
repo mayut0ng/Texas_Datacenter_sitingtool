@@ -32,33 +32,21 @@ let geoJsonLayer = null;
 // Magma color scale (darker = higher score)
 function getColor(score, minScore, maxScore) {
     let t = (score - minScore) / (maxScore - minScore + 0.0001);
-    // HSL: H从黄色(60)渐变到紫色(300)
-    let h;
-    if (t < 0.5) {
-        // 黄色 → 红色 (60 → 0)
-        h = 60 - (t * 2) * 60;
-    } else {
-        // 红色 → 紫色 (0 → 300)
-        h = (t - 0.5) * 2 * 300;
-    }
-    // S=80%, L=55% 颜色鲜艳且不刺眼
-    return `hsl(${h}, 80%, 55%)`;
+    // 20级从白到深紫的渐变
+    const colors = [
+        '#ffffff', '#fff8e7', '#fff0d0', '#ffe8b8', '#ffd99f',
+        '#ffc985', '#ffb86b', '#f9a45c', '#f28f4d', '#e67a44',
+        '#d86648', '#c65350', '#b23c5a', '#9a2a60', '#801c63',
+        '#661264', '#4d0b60', '#370657', '#240349', '#150033'
+    ];
+    const idx = Math.min(Math.floor(t * colors.length), colors.length - 1);
+    return colors[idx];
 }
 
 function getLegendColors() {
-    // 图例显示6个代表性颜色
     return [
-        'hsl(60, 80%, 55%)',   // 最低分 → 黄色
-        'hsl(48, 80%, 55%)',
-        'hsl(36, 80%, 55%)',
-        'hsl(24, 80%, 55%)',
-        'hsl(12, 80%, 55%)',
-        'hsl(0, 80%, 55%)',    // 红色
-        'hsl(60, 80%, 55%)',   // 红紫过渡
-        'hsl(120, 80%, 55%)',
-        'hsl(180, 80%, 55%)',
-        'hsl(240, 80%, 55%)',
-        'hsl(300, 80%, 55%)'   // 最高分 → 紫色
+        '#ffffff', '#fff0d0', '#ffd99f', '#ffb86b', '#f28f4d',
+        '#e67a44', '#c65350', '#b23c5a', '#801c63', '#4d0b60', '#150033'
     ];
 }
 
