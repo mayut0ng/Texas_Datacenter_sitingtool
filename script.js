@@ -3,27 +3,29 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href=" ">OpenStreetMap</a >'
 }).addTo(map);
 
-// 17 factors
+// 17 indicators with default weights
 const indicators = [
-    { id: '1_ST', name: 'Energy Storage', default: 0.0042 },
-    { id: '1_WI', name: 'Wind Power', default: 0.0017 },
-    { id: '1_SO', name: 'Solar Power', default: 0.0082 },
-    { id: '1_EG', name: 'Electricity Generation', default: 0.0219 },
-    { id: '1_OF', name: 'Fiber Coverage', default: 0.0152 },
-    { id: '1_TA', name: 'Traffic Accessibility', default: 0.0667 },
-    { id: '1_LP', name: 'Land Price', default: 0.0138 },
-    { id: '1_GDP', name: 'GDP', default: 0.2677 },
-    { id: '1_TT', name: 'Tech Talent', default: 0.1548 },
-    { id: '1_TPM', name: 'High-Income Migration', default: 0.0121 },
-    { id: '1_PF', name: 'Policy Friendliness', default: 0.0306 },
-    { id: '1_CP', name: 'Civil Protest', default: 0.0079 },
-    { id: '1_T', name: 'Temperature', default: 0.0077 },
-    { id: '1_NR', name: 'Natural Disaster Risk', default: 0.1253 },
-    { id: '1_GW', name: 'Groundwater', default: 0.0469 },
-    { id: '1_SW', name: 'Surface Water', default: 0.1761 },
-    { id: '1_RW', name: 'Reclaimed Water', default: 0.0392 }
+    { id: '1_ST', name: 'Energy Storage', default: 0.06 },
+    { id: '1_WI', name: 'Wind Power', default: 0.06 },
+    { id: '1_SO', name: 'Solar Power', default: 0.03 },
+    { id: '1_EG', name: 'Electricity Generation', default: 0.03 },
+    { id: '1_OF', name: 'Fiber Coverage', default: 0.05 },
+    { id: '1_TA', name: 'Traffic Accessibility', default: 0.05 },
+    { id: '1_LP', name: 'Land Price', default: 0.05 },
+    { id: '1_GDP', name: 'GDP', default: 0.05 },
+    { id: '1_TT', name: 'Tech Talent', default: 0.05 },
+    { id: '1_TPM', name: 'High-Income Migration', default: 0.05 },
+    { id: '1_PF', name: 'Policy Friendliness', default: 0.05 },
+    { id: '1_CP', name: 'Civil Protest', default: 0.05 },
+    { id: '1_T', name: 'Temperature', default: 0.05 },
+    { id: '1_NR', name: 'Natural Disaster Risk', default: 0.05 },
+    { id: '1_GW', name: 'Groundwater', default: 0.08 },
+    { id: '1_SW', name: 'Surface Water', default: 0.08 },
+    { id: '1_RW', name: 'Reclaimed Water', default: 0.06 }
 ];
 
+// 负向指标（值越小越好 → 需要反转）
+const negativeIndicators = ['1_LP', '1_NR', '1_CP'];
 
 let currentWeights = {};
 let geoJsonLayer = null;
@@ -44,7 +46,6 @@ function getLegendColors() {
     return ['#2c1a4d', '#6c2b6b', '#b03c75', '#e27c5c', '#f9ac5c', '#ffdd76'];
 }
 
-// Create slider controls
 function createSliders() {
     const container = document.getElementById('weight-sliders');
     container.innerHTML = '';
@@ -74,7 +75,6 @@ function createSliders() {
     });
 }
 
-// Normalize weights to sum to 1
 function normalizeWeights() {
     let sum = 0;
     for (let ind of indicators) sum += currentWeights[ind.id];
@@ -86,7 +86,6 @@ function normalizeWeights() {
     }
 }
 
-// Update total weight display and refresh map
 function updateTotalAndMap() {
     let sum = 0;
     for (let ind of indicators) sum += currentWeights[ind.id];
@@ -100,7 +99,6 @@ function updateTotalAndMap() {
     if (geoJsonLayer) updateMapColors();
 }
 
-// Calculate composite score and update county colors
 function updateMapColors() {
     if (!geoJsonLayer) return;
     
@@ -111,7 +109,13 @@ function updateMapColors() {
         for (let ind of indicators) {
             let val = props[ind.id];
             if (val === undefined || val === null) val = 0;
-            score += (currentWeights[ind.id] || 0) * parseFloat(val);
+            val = parseFloat(val);
+            
+            // 负向指标需要反转（1 - 标准化值）
+            if (negativeIndicators.includes(ind.id)) {
+                val = 1 - val;
+            }
+            score += (currentWeights[ind.id] || 0) * val;
         }
         props.score = score;
         scores.push(score);
@@ -136,22 +140,18 @@ function updateMapColors() {
 }
 
 function updateLegend(minScore, maxScore) {
-    // Remove existing legend if present
     const existingLegend = document.querySelector('.leaflet-control-legend');
-    if (existingLegend) {
-        existingLegend.remove();
-    }
+    if (existingLegend) existingLegend.remove();
     
     const LegendControl = L.Control.extend({
         onAdd: function() {
             const div = L.DomUtil.create('div', 'legend');
             const colors = getLegendColors();
-            const steps = colors.length;
             
             div.innerHTML = '<h4>Composite Score</h4>';
             const colorDiv = document.createElement('div');
             colorDiv.className = 'legend-colors';
-            for (let i = 0; i < steps; i++) {
+            for (let i = 0; i < colors.length; i++) {
                 const c = document.createElement('div');
                 c.className = 'legend-color';
                 c.style.backgroundColor = colors[i];
@@ -171,13 +171,10 @@ function updateLegend(minScore, maxScore) {
     map.addControl(new LegendControl({ position: 'bottomright' }));
 }
 
-// Load GeoJSON data
 async function loadData() {
     try {
         const response = await fetch('data/texas_counties.geojson');
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         
         console.log('GeoJSON loaded, features:', data.features?.length || 0);
@@ -200,7 +197,6 @@ async function loadData() {
     }
 }
 
-// Reset to default weights
 function resetWeights() {
     for (let ind of indicators) {
         currentWeights[ind.id] = ind.default;
@@ -212,7 +208,6 @@ function resetWeights() {
     updateTotalAndMap();
 }
 
-// Initialize
 createSliders();
 document.getElementById('resetBtn').addEventListener('click', resetWeights);
 loadData();
