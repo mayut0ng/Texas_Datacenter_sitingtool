@@ -32,17 +32,23 @@ let geoJsonLayer = null;
 // Magma color scale (darker = higher score)
 function getColor(score, minScore, maxScore) {
     let t = (score - minScore) / (maxScore - minScore + 0.0001);
-    // Magma colormap: dark purple -> orange -> light yellow
-    if (t < 0.2) return '#2c1a4d';
-    if (t < 0.35) return '#6c2b6b';
-    if (t < 0.5) return '#b03c75';
-    if (t < 0.65) return '#e27c5c';
-    if (t < 0.8) return '#f9ac5c';
-    return '#ffdd76';
+    // 10-gradient magma-inspired colormap: white → light yellow → orange → red → purple → dark purple
+    if (t < 0.1) return '#ffffff';   // 0-10% → 白色
+    if (t < 0.2) return '#fff5c4';   // 10-20% → 极浅黄
+    if (t < 0.3) return '#ffdd76';   // 20-30% → 浅黄
+    if (t < 0.4) return '#f9ac5c';   // 30-40% → 浅橙
+    if (t < 0.5) return '#e27c5c';   // 40-50% → 橙红
+    if (t < 0.6) return '#cc5a5a';   // 50-60% → 红
+    if (t < 0.7) return '#b03c75';   // 60-70% → 紫红
+    if (t < 0.8) return '#8a2b6b';   // 70-80% → 紫色
+    if (t < 0.9) return '#5b1a5a';   // 80-90% → 深紫
+    return '#2c1a4d';                // 90-100% → 最深紫
 }
-
 function getLegendColors() {
-    return ['#2c1a4d', '#6c2b6b', '#b03c75', '#e27c5c', '#f9ac5c', '#ffdd76'];
+    return [
+        '#ffffff', '#fff5c4', '#ffdd76', '#f9ac5c', '#e27c5c',
+        '#cc5a5a', '#b03c75', '#8a2b6b', '#5b1a5a', '#2c1a4d'
+    ];
 }
 
 function createSliders() {
