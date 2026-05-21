@@ -5,23 +5,23 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 
 // 17 factors
 const indicators = [
-    { id: 'ST', name: 'Energy Storage', default: 0.0042 },
-    { id: 'WI', name: 'Wind Power', default: 0.0017 },
-    { id: 'SO', name: 'Solar Power', default: 0.0082 },
-    { id: 'EG', name: 'Electricity Generation', default: 0.0219 },
-    { id: 'OF', name: 'Fiber Coverage', default: 0.0152 },
-    { id: 'TA', name: 'Traffic Accessibility', default: 0.0667 },
-    { id: 'LP', name: 'Land Price', default: 0.0138 },
-    { id: 'GDP', name: 'GDP', default: 0.2677 },
-    { id: 'TT', name: 'Tech Talent', default: 0.1548 },
-    { id: 'TPM', name: 'High-Income Migration', default: 0.0121 },
-    { id: 'PF', name: 'Policy Friendliness', default: 0.0306 },
-    { id: 'CP', name: 'Civil Protest', default: 0.0079 },
-    { id: 'T', name: 'Temperature', default: 0.0077 },
-    { id: 'NR', name: 'Natural Disaster Risk', default: 0.1253 },
-    { id: 'GW', name: 'Groundwater', default: 0.0469 },
-    { id: 'SW', name: 'Surface Water', default: 0.1761 },
-    { id: 'RW', name: 'Reclaimed Water', default: 0.0392 }
+    { id: '1_ST', name: 'Energy Storage', default: 0.0042 },
+    { id: '1_WI', name: 'Wind Power', default: 0.0017 },
+    { id: '1_SO', name: 'Solar Power', default: 0.0082 },
+    { id: '1_EG', name: 'Electricity Generation', default: 0.0219 },
+    { id: '1_OF', name: 'Fiber Coverage', default: 0.0152 },
+    { id: '1_TA', name: 'Traffic Accessibility', default: 0.0667 },
+    { id: '1_LP', name: 'Land Price', default: 0.0138 },
+    { id: '1_GDP', name: 'GDP', default: 0.2677 },
+    { id: '1_TT', name: 'Tech Talent', default: 0.1548 },
+    { id: '1_TPM', name: 'High-Income Migration', default: 0.0121 },
+    { id: '1_PF', name: 'Policy Friendliness', default: 0.0306 },
+    { id: '1_CP', name: 'Civil Protest', default: 0.0079 },
+    { id: '1_T', name: 'Temperature', default: 0.0077 },
+    { id: '1_NR', name: 'Natural Disaster Risk', default: 0.1253 },
+    { id: '1_GW', name: 'Groundwater', default: 0.0469 },
+    { id: '1_SW', name: 'Surface Water', default: 0.1761 },
+    { id: '1_RW', name: 'Reclaimed Water', default: 0.0392 }
 ];
 
 let currentWeights = {};
