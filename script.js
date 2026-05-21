@@ -32,22 +32,33 @@ let geoJsonLayer = null;
 // Magma color scale (darker = higher score)
 function getColor(score, minScore, maxScore) {
     let t = (score - minScore) / (maxScore - minScore + 0.0001);
-    // 10-gradient magma-inspired colormap: white → light yellow → orange → red → purple → dark purple
-    if (t < 0.1) return '#ffffff';   // 0-10% → 白色
-    if (t < 0.2) return '#fff5c4';   // 10-20% → 极浅黄
-    if (t < 0.3) return '#ffdd76';   // 20-30% → 浅黄
-    if (t < 0.4) return '#f9ac5c';   // 30-40% → 浅橙
-    if (t < 0.5) return '#e27c5c';   // 40-50% → 橙红
-    if (t < 0.6) return '#cc5a5a';   // 50-60% → 红
-    if (t < 0.7) return '#b03c75';   // 60-70% → 紫红
-    if (t < 0.8) return '#8a2b6b';   // 70-80% → 紫色
-    if (t < 0.9) return '#5b1a5a';   // 80-90% → 深紫
-    return '#2c1a4d';                // 90-100% → 最深紫
+    // HSL: H从黄色(60)渐变到紫色(300)
+    let h;
+    if (t < 0.5) {
+        // 黄色 → 红色 (60 → 0)
+        h = 60 - (t * 2) * 60;
+    } else {
+        // 红色 → 紫色 (0 → 300)
+        h = (t - 0.5) * 2 * 300;
+    }
+    // S=80%, L=55% 颜色鲜艳且不刺眼
+    return `hsl(${h}, 80%, 55%)`;
 }
+
 function getLegendColors() {
+    // 图例显示6个代表性颜色
     return [
-        '#ffffff', '#fff5c4', '#ffdd76', '#f9ac5c', '#e27c5c',
-        '#cc5a5a', '#b03c75', '#8a2b6b', '#5b1a5a', '#2c1a4d'
+        'hsl(60, 80%, 55%)',   // 最低分 → 黄色
+        'hsl(48, 80%, 55%)',
+        'hsl(36, 80%, 55%)',
+        'hsl(24, 80%, 55%)',
+        'hsl(12, 80%, 55%)',
+        'hsl(0, 80%, 55%)',    // 红色
+        'hsl(60, 80%, 55%)',   // 红紫过渡
+        'hsl(120, 80%, 55%)',
+        'hsl(180, 80%, 55%)',
+        'hsl(240, 80%, 55%)',
+        'hsl(300, 80%, 55%)'   // 最高分 → 紫色
     ];
 }
 
