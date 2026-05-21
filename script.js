@@ -21,7 +21,7 @@ const indicators = [
     { id: '1_NR', name: 'Natural Disaster Risk', default: 0.1253 },
     { id: '1_GW', name: 'Groundwater', default: 0.0469 },
     { id: '1_SW', name: 'Surface Water', default: 0.1761 },
-    { id: '1_RW', name: 'Reclaimed Water', default: 0.0392 }
+    { id: '1_RW', name: 'Reuse Water', default: 0.0392 }
 ];
 
 const negativeIndicators = ['1_LP', '1_NR', '1_CP'];
@@ -102,7 +102,46 @@ function updateTotalAndMap() {
     
     if (geoJsonLayer) updateMapColors();
 }
-
+function updateLegend(minScore, maxScore) {
+    const colors = getLegendColors();
+    
+    // 找现有图例，没有就创建
+    let legendDiv = document.querySelector('.leaflet-control-legend');
+    
+    if (!legendDiv) {
+        const LegendControl = L.Control.extend({
+            onAdd: function() {
+                const div = L.DomUtil.create('div', 'legend');
+                div.className = 'leaflet-control-legend';
+                div.style.background = 'white';
+                div.style.padding = '10px 12px';
+                div.style.borderRadius = '5px';
+                div.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+                div.style.fontSize = '12px';
+                div.style.minWidth = '120px';
+                return div;
+            }
+        });
+        map.addControl(new LegendControl({ position: 'bottomright' }));
+        legendDiv = document.querySelector('.leaflet-control-legend');
+    }
+    
+    // 更新内容
+    if (legendDiv) {
+        let html = '<h4 style="margin:0 0 8px 0;font-size:12px;">Composite Score</h4>';
+        html += '<div class="legend-colors" style="display:flex;height:20px;margin:5px 0;border-radius:2px;overflow:hidden;">';
+        for (let i = 0; i < colors.length; i++) {
+            html += `<div style="flex:1;background:${colors[i]};"></div>`;
+        }
+        html += '</div>';
+        html += `<div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px;">
+                    <span>${minScore.toFixed(3)}</span>
+                    <span>${maxScore.toFixed(3)}</span>
+                 </div>`;
+        
+        legendDiv.innerHTML = html;
+    }
+}
 function updateMapColors() {
     if (!geoJsonLayer) return;
     
