@@ -33,10 +33,18 @@
         button:hover { background: #2980b9; }
         .note { font-size: 11px; color: #7f8c8d; text-align: center; margin-top: 15px; }
         #map { flex: 1; height: 100vh; }
-        .legend { background: white; padding: 8px 12px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); font-size: 12px; }
-        .legend h4 { margin-bottom: 5px; font-size: 12px; }
-        .legend-colors { display: flex; height: 20px; margin: 5px 0; }
+        .legend {
+            background: white;
+            padding: 10px 12px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .legend h4 { margin: 0 0 8px 0; font-size: 12px; }
+        .legend-colors { display: flex; height: 20px; margin: 5px 0; border-radius: 2px; overflow: hidden; }
         .legend-color { flex: 1; }
+        .legend-labels { display: flex; justify-content: space-between; font-size: 10px; margin-top: 4px; }
     </style>
 </head>
 <body>
