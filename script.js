@@ -185,7 +185,7 @@ function updateMapColors() {
 
 async function loadData() {
     try {
-        const response = await fetch('data/texas_counties.geojson');
+        const response = await fetch('/Texas_Datacenter_sitingtool/data/texas_counties.geojson');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         
